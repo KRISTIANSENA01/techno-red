@@ -1,0 +1,131 @@
+<div class="account-shell" *ngIf="authService.isLoggedIn()">
+  <section class="account-content">
+    <ng-container [ngSwitch]="section">
+      <div *ngSwitchCase="'profile'">
+        <h2>Mi cuenta</h2>
+        <label>Nombres y apellidos</label>
+        <input class="form-control" [(ngModel)]="fullName" />
+
+        <label>Correo electronico</label>
+        <input class="form-control" [value]="email" disabled />
+
+        <div class="row g-2">
+          <div class="col-4">
+            <label>Tipo doc.</label>
+            <input class="form-control" [(ngModel)]="docType" />
+          </div>
+          <div class="col-8">
+            <label>Numero documento</label>
+            <input class="form-control" [(ngModel)]="docNumber" />
+          </div>
+        </div>
+
+        <label>Telefono principal</label>
+        <input class="form-control" [(ngModel)]="phone" />
+
+        <label>Telefono adicional</label>
+        <input class="form-control" [(ngModel)]="additionalPhone" />
+
+        <div class="actions">
+          <button class="btn btn-save" (click)="saveProfile()">Guardar</button>
+          <button class="btn btn-cancel" (click)="cancelProfile()">Cancelar</button>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'addresses'">
+        <h2>Mis direcciones</h2>
+        <article class="address-card" *ngFor="let address of addresses">
+          <div class="d-flex justify-content-between">
+            <strong>{{ address.name }}</strong>
+            <span class="star" *ngIf="address.favorite">★</span>
+          </div>
+          <p class="mb-0">{{ address.line1 }}</p>
+          <p class="mb-2">{{ address.city }}</p>
+          <a href="javascript:void(0)">Editar</a>
+        </article>
+
+        <a class="add-link" href="javascript:void(0)" (click)="addAddress()">+ Anadir nueva direccion</a>
+      </div>
+
+      <div *ngSwitchCase="'payments'">
+        <h2>Medios de pago</h2>
+        <p class="muted">
+          Puedes pagar tus productos a cuotas con cargo a tu factura Techno Red.
+        </p>
+        <article class="coupon-card">
+          <h4>Tu Cupo</h4>
+          <p class="muted">Actualmente no cuentas con cupo disponible</p>
+          <div class="bar"></div>
+          <div class="d-flex justify-content-between mt-2">
+            <span>Saldo utilizado: <strong>$0</strong></span>
+            <span>Cupo total: <strong>$0</strong></span>
+          </div>
+        </article>
+        <p class="muted mt-3">Ver terminos y condiciones</p>
+      </div>
+
+      <div *ngSwitchCase="'support'">
+        <h2>Ayuda y soporte</h2>
+        <article class="support-card">
+          <h4>Comunicate con soporte</h4>
+          <p>Linea de atencion: <strong>3100000000</strong></p>
+        </article>
+      </div>
+
+      <div *ngSwitchCase="'password'">
+        <h2>Cambiar contrasena</h2>
+        <p class="muted">Escribe tu contrasena actual y luego, ingresa tu nueva contrasena.</p>
+        <label>Contrasena actual</label>
+        <input type="password" class="form-control" [(ngModel)]="currentPassword" />
+
+        <label>Nueva contrasena</label>
+        <input type="password" class="form-control" [(ngModel)]="newPassword" />
+
+        <label>Repite tu nueva contrasena</label>
+        <input type="password" class="form-control" [(ngModel)]="confirmPassword" />
+
+        <div class="rules">
+          <p [class.ok]="passwordChecks.length">Al menos 8 caracteres</p>
+          <p [class.ok]="passwordChecks.upper">Al menos una letra mayuscula</p>
+          <p [class.ok]="passwordChecks.special">Al menos un caracter especial</p>
+          <p [class.ok]="passwordChecks.noSpaces">No se permiten espacios</p>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-save" [disabled]="changingPassword" (click)="changePassword()">
+            {{ changingPassword ? 'Guardando...' : 'Guardar' }}
+          </button>
+          <button class="btn btn-cancel" (click)="selectSection('profile')">Cancelar</button>
+        </div>
+      </div>
+    </ng-container>
+
+    <div *ngIf="message" class="alert alert-success mt-3">{{ message }}</div>
+    <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+  </section>
+
+  <aside class="account-menu">
+    <div class="menu-head">
+      <h3>Hola {{ greetingName }}!</h3>
+      <button class="close-btn" (click)="closeAccount()">×</button>
+    </div>
+
+    <button class="menu-item" [class.active]="section==='profile'" (click)="selectSection('profile')">
+      <i class="bi bi-person"></i> Mi cuenta
+    </button>
+    <button class="menu-item" [class.active]="section==='addresses'" (click)="selectSection('addresses')">
+      <i class="bi bi-geo-alt"></i> Mis direcciones
+    </button>
+    <button class="menu-item" [class.active]="section==='payments'" (click)="selectSection('payments')">
+      <i class="bi bi-credit-card"></i> Medios de pago
+    </button>
+    <button class="menu-item" [class.active]="section==='support'" (click)="selectSection('support')">
+      <i class="bi bi-wrench-adjustable"></i> Ayuda y soporte
+    </button>
+
+    <div class="menu-footer">
+      <a href="javascript:void(0)" (click)="selectSection('password')">Cambiar contrasena</a>
+      <a href="javascript:void(0)" (click)="logout()">Cerrar sesion</a>
+    </div>
+  </aside>
+</div>

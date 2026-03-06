@@ -1,0 +1,54 @@
+<div class="auth-layout">
+  <app-loading-screen [visible]="loading" [fullScreen]="true" message="Iniciando sesion..." />
+
+  <section class="auth-visual"></section>
+
+  <section class="auth-card-wrap">
+    <div class="auth-card">
+      <a routerLink="/" class="back-link"><i class="bi bi-chevron-left"></i> Volver</a>
+
+      <div class="brand">
+        <img src="assets/branding/logo-main.jpg" alt="Techno Red" />
+      </div>
+      <h1>Inicio de sesion</h1>
+
+      <form (ngSubmit)="onSubmit()">
+        <label>Correo electronico</label>
+        <input
+          type="email"
+          class="form-control"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Ingresa tu correo"
+          required
+        >
+
+        <label>Contrasena</label>
+        <div class="password-wrap">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Ingresa tu contrasena"
+            required
+          >
+          <button type="button" class="eye-btn" (click)="togglePassword($event)">
+            <i class="bi" [class.bi-eye]="showPassword" [class.bi-eye-slash]="!showPassword"></i>
+          </button>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-2 mb-2">
+          {{ errorMessage }}
+        </div>
+
+        <button type="submit" class="btn login-btn w-100" [disabled]="loading">
+          {{ loading ? 'Ingresando...' : 'Ingresar' }}
+        </button>
+      </form>
+
+      <a routerLink="/forgot-password" class="help-link">Olvide la contrasena</a>
+      <a routerLink="/register" class="help-link"><i class="bi bi-person-plus"></i> Registrarse</a>
+    </div>
+  </section>
+</div>

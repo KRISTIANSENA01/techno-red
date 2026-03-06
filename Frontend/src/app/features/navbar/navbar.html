@@ -1,0 +1,72 @@
+<app-loading-screen [visible]="navLoading" [fullScreen]="true" message="Cargando..." />
+
+<nav class="techno-topbar">
+  <div class="container techno-row">
+    <a class="techno-logo" href="/" (click)="navigateHome($event)">
+      <img src="assets/branding/logo-main.jpg" alt="Techno Red" />
+      <span>Techno Red</span>
+    </a>
+    <small class="role-pill" *ngIf="roleLabel">{{ roleLabel }}</small>
+
+    <div class="techno-actions">
+      <a *ngIf="authService.canAccessPanel()" class="techno-item" href="/panel" (click)="navigatePanel($event)">
+        <i class="bi bi-speedometer2"></i>
+        <span>Panel</span>
+      </a>
+
+      <a class="techno-item" href="/account" (click)="navigateAccount($event)">
+        <i class="bi bi-person"></i>
+        <span>Mi cuenta</span>
+      </a>
+
+      <div class="mini-cart-zone" (mouseenter)="openMiniCart()" (mouseleave)="scheduleMiniCartClose()">
+        <a class="techno-item" routerLink="/cart">
+          <div class="cart-icon-wrap">
+            <i class="bi bi-cart3"></i>
+            <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+          </div>
+          <span>Mi carrito</span>
+        </a>
+
+        <div
+          class="mini-cart-panel"
+          *ngIf="cartCount > 0 && miniCartOpen"
+          (mouseenter)="openMiniCart()"
+          (mouseleave)="scheduleMiniCartClose()"
+        >
+          <h5>Productos en mi carrito</h5>
+
+          <div class="mini-cart-list" *ngIf="cartService.items$ | async as items">
+            <article class="mini-item" *ngFor="let item of items">
+              <img [src]="item.product.product_images?.[0]?.image_url || 'assets/placeholder.png'" />
+              <div class="mini-item-body">
+                <p class="mini-name">{{ item.product.name }}</p>
+                <p class="mini-qty">Cantidad: {{ item.quantity }}</p>
+                <p class="mini-price">$ {{ item.product.price | priceFormat }}</p>
+              </div>
+              <button class="mini-remove" (click)="removeFromMiniCart(item.product.id)">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </article>
+          </div>
+
+          <div class="mini-subtotal">
+            <span>Subtotal</span>
+            <strong>$ {{ cartSubtotal | priceFormat }}</strong>
+          </div>
+          <a routerLink="/cart" class="btn mini-cart-btn">Ir a carro de compras</a>
+        </div>
+      </div>
+
+      <button
+        *ngIf="showLogoutIcon"
+        class="btn techno-logout"
+        (click)="logout()"
+        title="Cerrar sesion"
+        aria-label="Cerrar sesion"
+      >
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</nav>

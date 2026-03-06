@@ -1,0 +1,150 @@
+.detail-page {
+  color: #1f1f1f;
+}
+
+.breadcrumbs {
+  font-size: 0.92rem;
+  margin-bottom: 1.1rem;
+}
+
+.breadcrumbs a {
+  color: #00708a;
+  text-decoration: none;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 2rem;
+}
+
+.image-box {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e8e8e8;
+  padding: 1rem;
+}
+
+.image-box img {
+  width: 100%;
+  max-height: 430px;
+  object-fit: contain;
+}
+
+.brand {
+  margin-bottom: 0.2rem;
+  color: #6b6b6b;
+}
+
+.info-box h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 0.6rem;
+}
+
+.stock {
+  color: #007f95;
+  font-weight: 700;
+}
+
+.info-box h2 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-top: 0.8rem;
+  margin-bottom: 0;
+}
+
+.price-label {
+  margin-bottom: 1rem;
+}
+
+.spec-toggle {
+  border-top: 1px solid #d4d4d4;
+  border-bottom: 1px solid #d4d4d4;
+  padding: 0.85rem 0;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.spec-content {
+  padding: 0.8rem 0;
+}
+
+.spec-section h3 {
+  font-size: 1.05rem;
+  color: #005f70;
+  margin-top: 0.9rem;
+  font-weight: 800;
+}
+
+.spec-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  border-bottom: 1px dashed #ececec;
+  padding: 0.35rem 0;
+}
+
+.spec-row span {
+  color: #565656;
+}
+
+.buy-box {
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.buy-title {
+  font-weight: 800;
+}
+
+.colors {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.color-tag {
+  border-radius: 999px;
+  background: #f1f1f1;
+  border: 1px solid #d8d8d8;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.cart-btn {
+  background: #de1515;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 0.55rem 1.2rem;
+}
+
+.cart-btn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.terms-box {
+  background: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 12px;
+  padding: 0 1rem 1rem;
+}
+
+@media (max-width: 992px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-box h1,
+  .info-box h2 {
+    font-size: 1.8rem;
+  }
+}

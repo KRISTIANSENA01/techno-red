@@ -1,0 +1,315 @@
+<div class="container mt-4 techno-panel">
+  <app-loading-screen
+    [visible]="updatingUserCredentials"
+    [fullScreen]="true"
+    [message]="'Guardando cambios en ' + credentialsSaveCountdown + 's...'"
+  />
+
+  <div class="techno-panel-head mb-3">
+    <div class="head-row">
+      <h2 class="mb-0">Panel de Control</h2>
+      <div class="head-actions" *ngIf="authService.isLoggedIn()">
+        <button class="btn techno-soft-btn" type="button" *ngIf="canOpenProductManager" (click)="toggleProductManager()">
+          {{ showProductManager ? 'Cerrar productos existentes' : 'Ver productos existentes' }}
+        </button>
+        <button class="btn techno-soft-btn" type="button" *ngIf="authService.isAdmin()" (click)="toggleAdminSellerMode()">
+          {{ adminSellerMode ? 'Desactivar modo vendedor' : 'Admin usar funciones vendedor' }}
+        </button>
+        <button class="btn techno-soft-btn techno-key-btn" type="button" *ngIf="canManageUsers" (click)="openAdminPasswordModal()">
+          <i class="bi bi-key-fill"></i>
+          {{ adminKeyButtonLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info" *ngIf="!authService.isLoggedIn()">
+    Debes iniciar sesion para usar el panel.
+  </div>
+
+  <div *ngIf="authService.isLoggedIn()">
+    <div class="alert alert-success" *ngIf="message">{{ message }}</div>
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+    <section class="card techno-card mb-4" *ngIf="canManageProducts">
+      <div class="card-header techno-card-header">
+        Rol vendedor: agregar y borrar productos
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="addProduct()">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre</label>
+              <input class="form-control techno-input" [(ngModel)]="name" name="name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Precio</label>
+              <input type="number" class="form-control techno-input" [(ngModel)]="price" name="price" min="1" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Descripcion</label>
+              <textarea class="form-control techno-input" [(ngModel)]="description" name="description" rows="2" required></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">URL imagen (opcional)</label>
+              <input class="form-control techno-input" [(ngModel)]="imageUrl" name="imageUrl">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Marca (opcional)</label>
+              <input class="form-control techno-input" [(ngModel)]="brand" name="brand" placeholder="Ej: Tecno Mobile">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Unidades disponibles (opcional)</label>
+              <input type="number" class="form-control techno-input" [(ngModel)]="availableUnits" name="availableUnits" min="0">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Colores disponibles (opcional, separados por coma)</label>
+              <input class="form-control techno-input" [(ngModel)]="colorsInput" name="colorsInput" placeholder="NEGRO, AZUL, ROJO">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Ficha tecnica opcional</label>
+              <div class="row g-2">
+                <div class="col-md-3">
+                  <input class="form-control techno-input" [(ngModel)]="specSection" name="specSection" placeholder="Seccion">
+                </div>
+                <div class="col-md-4">
+                  <input class="form-control techno-input" [(ngModel)]="specLabel" name="specLabel" placeholder="Campo">
+                </div>
+                <div class="col-md-4">
+                  <input class="form-control techno-input" [(ngModel)]="specValue" name="specValue" placeholder="Valor">
+                </div>
+                <div class="col-md-1 d-grid">
+                  <button class="btn btn-outline-secondary" type="button" (click)="addTechnicalSpec()">+</button>
+                </div>
+              </div>
+              <ul class="list-group list-group-flush mt-2" *ngIf="technicalSpecs.length > 0">
+                <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center" *ngFor="let spec of technicalSpecs; let i = index">
+                  <span><strong>{{ spec.section }}</strong> - {{ spec.label }}: {{ spec.value }}</span>
+                  <button class="btn btn-sm btn-outline-danger" type="button" (click)="removeTechnicalSpec(i)">Quitar</button>
+                </li>
+              </ul>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Terminos y condiciones (opcional)</label>
+              <textarea
+                class="form-control techno-input"
+                [(ngModel)]="termsAndConditions"
+                name="termsAndConditions"
+                rows="4"
+                placeholder="Aqui puedes pegar terminos y condiciones de la oferta"
+              ></textarea>
+            </div>
+          </div>
+          <button class="btn techno-action-btn mt-3" type="submit">Agregar producto</button>
+          <span class="saved-tag" *ngIf="productSavedTag">Producto guardado satisfactoriamente</span>
+        </form>
+
+        <hr>
+
+        <h6>Productos del vendedor</h6>
+        <div class="table-responsive" *ngIf="sellerProducts.length > 0; else noProducts">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Accion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of sellerProducts">
+                <td>{{ product.name }}</td>
+                <td>$ {{ product.price | priceFormat }}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product.id)">
+                    Borrar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noProducts>
+          <p class="text-muted mb-0">No tienes productos creados.</p>
+        </ng-template>
+      </div>
+    </section>
+
+    <section class="card techno-card mb-4" *ngIf="showProductManager">
+      <div class="card-header techno-card-header">
+        Gestion de productos existentes
+      </div>
+      <div class="card-body">
+        <div class="table-responsive" *ngIf="sellerProducts.length > 0; else noProductsAdmin">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Accion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of sellerProducts">
+                <ng-container *ngIf="editingProductId !== product.id; else editRow">
+                  <td>{{ product.name }}</td>
+                  <td>$ {{ product.price | priceFormat }}</td>
+                  <td>{{ product.available_units ?? product.stock ?? 0 }}</td>
+                  <td class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" (click)="startEdit(product)">Editar</button>
+                    <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteProduct(product.id)">Borrar</button>
+                  </td>
+                </ng-container>
+                <ng-template #editRow>
+                  <td colspan="4">
+                    <div class="row g-2">
+                      <div class="col-md-6">
+                        <input class="form-control form-control-sm techno-input" [(ngModel)]="editName" [name]="'edit-name-' + product.id" placeholder="Nombre">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="number" class="form-control form-control-sm techno-input" [(ngModel)]="editPrice" [name]="'edit-price-' + product.id" placeholder="Precio">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="number" class="form-control form-control-sm techno-input" [(ngModel)]="editStock" [name]="'edit-stock-' + product.id" placeholder="Stock">
+                      </div>
+                      <div class="col-12">
+                        <textarea class="form-control form-control-sm techno-input" rows="2" [(ngModel)]="editDescription" [name]="'edit-description-' + product.id" placeholder="Descripcion"></textarea>
+                      </div>
+                      <div class="col-12">
+                        <input class="form-control form-control-sm techno-input" [(ngModel)]="editImageUrl" [name]="'edit-image-' + product.id" placeholder="URL imagen">
+                      </div>
+                      <div class="col-12 d-flex gap-2">
+                        <button class="btn btn-sm techno-action-btn" type="button" (click)="saveEdit(product.id)">Guardar</button>
+                        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="cancelEdit()">Cancelar</button>
+                      </div>
+                    </div>
+                  </td>
+                </ng-template>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noProductsAdmin>
+          <p class="text-muted mb-0">No hay productos para mostrar.</p>
+        </ng-template>
+      </div>
+    </section>
+
+    <section class="card techno-card" *ngIf="canManageUsers">
+      <div class="card-header techno-card-header">
+        Rol admin: asignar vendedor y bloquear cuentas
+      </div>
+      <div class="card-body">
+        <div class="table-responsive" *ngIf="users.length > 0; else noAdminUsers">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users">
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                  <select
+                    class="form-select form-select-sm techno-input"
+                    [ngModel]="user.role"
+                    (ngModelChange)="updateRole(user.id, $event)"
+                    [name]="'role-' + user.email"
+                  >
+                    <option value="user">Cliente</option>
+                    <option value="support">Vendedor</option>
+                  </select>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-sm"
+                    [class.btn-outline-danger]="user.isActive"
+                    [class.btn-outline-success]="!user.isActive"
+                    (click)="toggleBlocked(user.id, user.isActive)"
+                  >
+                    {{ user.isActive ? 'Bloquear' : 'Desbloquear' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noAdminUsers>
+          <div class="py-3">
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="refreshUsers()">
+              Cargar usuario
+            </button>
+          </div>
+        </ng-template>
+
+        <ng-container *ngIf="adminPasswordUnlocked">
+          <hr>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Cambiar nombre o contrasena de usuario</h6>
+          </div>
+          <div class="row g-2">
+            <div class="col-md-4">
+              <select class="form-select techno-input" [(ngModel)]="targetUserId" name="targetUserId">
+                <option value="">Selecciona usuario</option>
+                <option *ngFor="let user of users" [value]="user.id">{{ user.name }} - {{ user.email }}</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <input
+                class="form-control techno-input"
+                [(ngModel)]="targetUserName"
+                name="targetUserName"
+                placeholder="Nuevo nombre (opcional)"
+              >
+            </div>
+            <div class="col-md-3">
+              <input
+                type="password"
+                class="form-control techno-input"
+                [(ngModel)]="targetUserPassword"
+                name="targetUserPassword"
+                placeholder="Nueva contrasena (opcional)"
+              >
+            </div>
+            <div class="col-md-1 d-grid">
+              <button class="btn techno-action-btn" type="button" [disabled]="updatingUserCredentials" (click)="updateUserCredentials()">Guardar</button>
+            </div>
+             <div class="col-md-1 d-grid"><button class="btn btn-sm btn-outline-secondary" type="button" (click)="closeAdminKeyOptions()">
+              Cerrar
+            </button></div>
+            <div class="col-12">
+              <span class="saved-tag" *ngIf="userCredentialsSavedTag">Guardado correctamente</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="admin-modal-backdrop" *ngIf="showAdminPasswordModal">
+  <div class="admin-modal">
+    <button class="admin-modal-close" type="button" (click)="cancelAdminPasswordModal()">x</button>
+    <img src="assets/branding/logo-main.jpg" alt="Techno Red" />
+    <h5>Confirmar clave admin</h5>
+    <p>Ingresa tu contrasena de administrador para continuar.</p>
+    <input
+      type="password"
+      class="form-control techno-input"
+      [(ngModel)]="adminPasswordInput"
+      name="adminPasswordInput"
+      placeholder="Contrasena admin"
+    >
+    <small class="text-danger" *ngIf="adminPasswordError">{{ adminPasswordError }}</small>
+    <div class="admin-modal-actions">
+      <button class="btn btn-outline-secondary" type="button" (click)="cancelAdminPasswordModal()">Cancelar</button>
+      <button class="btn techno-action-btn" type="button" (click)="acceptAdminPasswordModal()">Aceptar</button>
+    </div>
+  </div>
+</div>

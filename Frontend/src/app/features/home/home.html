@@ -1,0 +1,84 @@
+<section class="home-hero">
+  <div class="container">
+    <div class="hero-carousel">
+      <button class="slide-nav prev" type="button" aria-label="Imagen anterior" (click)="previousSlide()">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <div class="slide-frame">
+        <img [src]="banners[activeBanner].image" [alt]="banners[activeBanner].alt" />
+      </div>
+
+      <button class="slide-nav next" type="button" aria-label="Imagen siguiente" (click)="nextSlide()">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+
+      <div class="slide-dots">
+        <button
+          *ngFor="let banner of banners; let i = index"
+          type="button"
+          [class.active]="i === activeBanner"
+          [attr.aria-label]="'Ir al banner ' + (i + 1)"
+          (click)="goToSlide(i)">
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="category-section">
+  <div class="container">
+    <h3>Compra por categoria</h3>
+    <div class="categories">
+      <a class="category-pill" *ngFor="let category of categories">
+        <i [class]="'bi ' + category.icon"></i>
+        <span>{{ category.name }}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="products-section container">
+  <h3>Productos recomendados</h3>
+  <p
+    class="text-center"
+    [class.text-danger]="homeMessageType === 'error'"
+    [class.text-success]="homeMessageType === 'success'"
+    *ngIf="homeMessage"
+  >
+    {{ homeMessage }}
+  </p>
+  <app-loading-screen [visible]="addingToCart" [fullScreen]="true" message="Agregando producto al carrito..." />
+
+  <app-loading-screen
+    [visible]="(loading$ | async) ?? false"
+    [fullScreen]="true"
+    message="Cargando catalogo..." />
+
+  <div class="row g-4" *ngIf="!(loading$ | async)">
+    <div class="col-sm-6 col-lg-3" *ngFor="let product of products$ | async">
+      <article class="product-card" [class.out-of-stock]="isOutOfStock(product)">
+        <div class="product-media">
+          <div class="product-image-wrap">
+            <img [src]="getProductImage(product)" [alt]="product.name || 'Producto'" />
+          </div>
+        </div>
+
+        <div class="product-content">
+          <h5>{{ product.name }}</h5>
+          <strong class="product-price">$ {{ product.price | priceFormat }}</strong>
+          <span class="price-now">Precio ahora</span>
+
+          <a class="btn product-btn" [routerLink]="['/product', product.id]">Ver producto</a>
+          <button class="quick-add-btn" (click)="addToCart(product)" [disabled]="isOutOfStock(product)">
+            {{ isOutOfStock(product) ? 'Sin stock' : 'Anadir al carrito' }}
+          </button>
+
+          <p class="text-success small mt-1 mb-0" *ngIf="addedProductId === product.id">
+            Producto agregado al carrito
+          </p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

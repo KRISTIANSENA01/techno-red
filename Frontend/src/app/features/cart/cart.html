@@ -1,0 +1,68 @@
+<app-loading-screen [visible]="loading" [fullScreen]="true" message="Cargando carrito..." />
+
+<div class="container cart-page mt-4" *ngIf="!loading && (items$ | async) as items">
+  <div class="alert alert-warning" *ngIf="alertMessage">{{ alertMessage }}</div>
+  <ng-container *ngIf="items.length > 0; else empty">
+    <div class="cart-layout">
+      <section>
+        <h2>Carrito de compras</h2>
+
+        <article class="cart-card" *ngFor="let item of items">
+          <img [src]="item.product.product_images?.[0]?.image_url || 'assets/placeholder.png'" />
+          <div class="cart-info">
+            <h3>{{ item.product.name }}</h3>
+            <h4>$ {{ item.product.price | priceFormat }}</h4>
+            <p>Color: {{ item.product.colors_available?.[0] || 'Unico' }}</p>
+            <div class="qty-box">
+              <button (click)="decrement(item.product.id)">-</button>
+              <span>{{ item.quantity }}</span>
+              <button (click)="increment(item.product.id)">+</button>
+            </div>
+          </div>
+          <button class="remove-btn" (click)="remove(item.product.id)">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </article>
+
+        <div class="cart-actions">
+          <a class="btn btn-outline" routerLink="/">Anadir mas productos</a>
+          <button class="btn btn-primary">Continuar</button>
+        </div>
+      </section>
+
+      <aside class="summary-box">
+        <h3>Resumen de tu compra</h3>
+        <div class="summary-head">
+          <span>Descripcion</span>
+          <span>Cantidad</span>
+          <span>Valor total</span>
+        </div>
+
+        <div class="summary-row" *ngFor="let item of items">
+          <span>{{ item.product.name }}</span>
+          <span>{{ item.quantity }}</span>
+          <strong>$ {{ ((item.product.price || 0) * item.quantity) | priceFormat }}</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>IVA</span>
+          <span></span>
+          <strong>$0</strong>
+        </div>
+
+        <div class="summary-total">
+          <span>Total:</span>
+          <strong>$ {{ getSubtotal() | priceFormat }}</strong>
+        </div>
+      </aside>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #empty>
+  <div class="container mt-4">
+    <h2>Carrito de compras</h2>
+    <p>Tu carrito esta vacio.</p>
+    <a routerLink="/" class="btn btn-primary">Ir a comprar</a>
+  </div>
+</ng-template>

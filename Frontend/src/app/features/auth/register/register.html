@@ -1,0 +1,85 @@
+<section class="register-shell">
+  <app-loading-screen [visible]="loading" [fullScreen]="true" message="Registrando usuario..." />
+
+  <div class="register-card">
+    <a class="brand" routerLink="/">Techno Red</a>
+    <h1>Crea una cuenta</h1>
+
+    <form (ngSubmit)="onSubmit()">
+      <h2>Datos personales</h2>
+
+      <label>Correo electronico</label>
+      <input type="email" class="form-control" [(ngModel)]="email" name="email" required>
+
+      <div class="grid-2">
+        <div>
+          <label>Tipo documento</label>
+          <select class="form-select" [(ngModel)]="docType" name="docType" required>
+            <option value="">Selecciona una opcion</option>
+            <option value="cc">Cedula</option>
+            <option value="ce">Cedula extranjeria</option>
+            <option value="ti">Tarjeta identidad</option>
+          </select>
+        </div>
+        <div>
+          <label>Numero de documento</label>
+          <input class="form-control" [(ngModel)]="docNumber" name="docNumber" required>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Nombres</label>
+          <input class="form-control" [(ngModel)]="firstName" name="firstName" required>
+        </div>
+        <div>
+          <label>Apellidos</label>
+          <input class="form-control" [(ngModel)]="lastName" name="lastName" required>
+        </div>
+      </div>
+
+      <label>Celular</label>
+      <input class="form-control" [(ngModel)]="phone" name="phone">
+
+      <div class="grid-2">
+        <div>
+          <label>Contrasena</label>
+          <input type="password" class="form-control" [(ngModel)]="password" name="password" required>
+        </div>
+        <div>
+          <label>Confirmar contrasena</label>
+          <input type="password" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+        </div>
+      </div>
+
+      <h2>Direccion</h2>
+
+      <div class="grid-2">
+        <div>
+          <label>Departamento</label>
+          <input class="form-control" [(ngModel)]="department" name="department">
+        </div>
+        <div>
+          <label>Ciudad</label>
+          <input class="form-control" [(ngModel)]="city" name="city">
+        </div>
+      </div>
+
+      <label>Barrio</label>
+      <input class="form-control" [(ngModel)]="neighborhood" name="neighborhood">
+
+      <label>Direccion adicional</label>
+      <input class="form-control" [(ngModel)]="address" name="address">
+
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3 mb-2">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success mt-3 mb-2">{{ successMessage }}</div>
+
+      <div class="actions">
+        <a routerLink="/login" class="btn btn-cancel">Cancelar</a>
+        <button type="submit" class="btn btn-submit" [disabled]="loading">
+          {{ loading ? 'Registrando...' : 'Continuar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

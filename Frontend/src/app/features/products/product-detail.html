@@ -1,0 +1,89 @@
+<div class="container detail-page mt-4" *ngIf="!loading; else loadingTpl">
+  <ng-container *ngIf="product as p; else noProductTpl">
+    <p class="breadcrumbs">
+      <a routerLink="/">Tienda</a> / <span>{{ p.name }}</span>
+    </p>
+
+    <div class="detail-grid">
+      <div class="image-box">
+        <img
+          [src]="p.product_images?.[0]?.image_url || 'assets/images/no-image.png'"
+          [alt]="p.name"
+          class="img-fluid"
+        />
+      </div>
+
+      <div class="info-box">
+        <p class="brand">{{ p.brand || 'Marca no especificada' }}</p>
+        <h1>{{ p.name }}</h1>
+
+        <p class="stock" *ngIf="(p.available_units ?? p.stock) !== undefined">
+          Stock disponible: {{ p.available_units ?? p.stock }}
+        </p>
+
+        <h2>$ {{ p.price | priceFormat }}</h2>
+        <p class="price-label">Precio Ahora</p>
+
+        <div class="spec-toggle" (click)="showSpecs = !showSpecs">
+          Caracteristicas tecnicas principales
+          <span>{{ showSpecs ? 'v' : '>' }}</span>
+        </div>
+
+        <div *ngIf="showSpecs" class="spec-content">
+          <p *ngIf="!hasSpecs" class="text-muted mb-0">
+            {{ p.description || 'Sin ficha tecnica cargada.' }}
+          </p>
+
+          <ng-container *ngIf="hasSpecs">
+            <div class="spec-section" *ngFor="let block of groupedSpecs">
+              <h3>{{ block.section }}</h3>
+              <div class="spec-row" *ngFor="let item of block.values">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value }}</strong>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="buy-box mt-3">
+          <p class="buy-title">Como lo quieres comprar?</p>
+          <p class="mb-2">Solo el celular</p>
+
+          <p class="mb-1"><strong>Colores disponibles:</strong></p>
+          <div class="colors mb-3" *ngIf="colors.length > 0; else noColors">
+            <span class="color-tag" *ngFor="let color of colors">{{ color }}</span>
+          </div>
+
+          <ng-template #noColors>
+            <p class="text-muted">No especificados</p>
+          </ng-template>
+
+          <button class="btn cart-btn" (click)="addToCart()" [disabled]="outOfStock">
+            {{ outOfStock ? 'Sin stock' : 'Anadir al carrito' }}
+          </button>
+          <p class="mt-2 mb-0" [class.text-danger]="messageIsError" [class.text-success]="!messageIsError" *ngIf="addedMessage">
+            {{ addedMessage }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="terms-box mt-4" *ngIf="p.terms_and_conditions">
+      <div class="spec-toggle" (click)="showTerms = !showTerms">
+        Terminos y Condiciones
+        <span>{{ showTerms ? 'v' : '>' }}</span>
+      </div>
+      <p *ngIf="showTerms" class="mt-2">{{ p.terms_and_conditions }}</p>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="container mt-4">
+    <app-loading-screen [visible]="true" [fullScreen]="true" message="Cargando producto..." />
+  </div>
+</ng-template>
+
+<ng-template #noProductTpl>
+  <p class="container mt-4">Producto no encontrado</p>
+</ng-template>

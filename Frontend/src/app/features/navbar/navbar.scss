@@ -1,0 +1,254 @@
+.techno-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(90deg, #420101 0%, #aa0404 55%, #000000 100%);
+  padding: 0.9rem 0;
+  box-shadow: 0 7px 16px rgba(80, 18, 18, 0.24);
+}
+
+.techno-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.techno-logo {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.techno-logo img {
+  width: 62px;
+  height: 62px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.techno-logo span {
+  color: #fff;
+}
+
+.role-pill {
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-weight: 700;
+}
+
+.techno-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mini-cart-zone {
+  position: relative;
+}
+
+.techno-item {
+  color: #fff;
+  text-decoration: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  min-width: 75px;
+}
+
+.techno-item i {
+  font-size: 1.55rem;
+  margin-bottom: 0.1rem;
+  transition: transform 220ms ease, filter 220ms ease;
+  animation: gentleFloat 2.6s ease-in-out infinite;
+}
+
+.techno-item:hover i {
+  transform: translateY(-2px) scale(1.06);
+  filter: drop-shadow(0 3px 4px rgba(255, 255, 255, 0.25));
+}
+
+.cart-icon-wrap {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  right: -9px;
+  top: -4px;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  background: #ffe1e1;
+  color: #842323;
+  font-size: 0.68rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+.mini-cart-panel {
+  position: absolute;
+  right: -10px;
+  top: calc(100% + 10px);
+  width: 355px;
+  background: #f7f7f7;
+  border-radius: 12px;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.18);
+  padding: 0.8rem;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  z-index: 20;
+}
+
+.mini-cart-panel h5 {
+  margin: 0 0 0.6rem;
+  font-weight: 800;
+  color: #2a2a2a;
+}
+
+.mini-cart-list {
+  max-height: 260px;
+  overflow: auto;
+}
+
+.mini-item {
+  display: grid;
+  grid-template-columns: 52px 1fr 26px;
+  gap: 0.55rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.mini-item img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.mini-name {
+  margin: 0;
+  color: #272727;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.mini-qty {
+  margin: 0.15rem 0 0;
+  font-size: 0.83rem;
+  color: #4c4c4c;
+}
+
+.mini-price {
+  margin: 0.15rem 0 0;
+  color: #126a7e;
+  font-weight: 800;
+}
+
+.mini-remove {
+  border: 0;
+  background: transparent;
+  color: #277d90;
+}
+
+.mini-subtotal {
+  margin-top: 0.55rem;
+  display: flex;
+  justify-content: space-between;
+  color: #333;
+}
+
+.mini-subtotal strong {
+  color: #126a7e;
+}
+
+.mini-cart-btn {
+  margin-top: 0.6rem;
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c84949 0%, #a73e3e 100%);
+  color: #fff;
+  font-weight: 700;
+}
+
+.techno-logout {
+  border: 1px solid #ffd1d1;
+  color: #fff;
+  border-radius: 999px;
+  width: 38px;
+  height: 38px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+}
+
+.techno-logout i {
+  font-size: 1.15rem;
+}
+
+.techno-logout:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+@keyframes gentleFloat {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .techno-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .techno-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .techno-item {
+    min-width: auto;
+    font-size: 0.78rem;
+  }
+
+  .techno-logo {
+    font-size: 1.28rem;
+  }
+
+  .techno-logo img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .techno-item i {
+    font-size: 1.3rem;
+  }
+
+  .mini-cart-panel {
+    right: 0;
+    width: 320px;
+  }
+}
+
